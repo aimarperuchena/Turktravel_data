@@ -1,4 +1,6 @@
 import pyodbc 
+import numpy as np
+from decimal import Decimal
 databaseName = 'Turktravel'
 username = 'sa'
 password = 'Laboratorio01,'
@@ -66,24 +68,44 @@ def getActividades():
     return rows
 
 def insertViaje(data):
-    row_id = ''
+    
+    importe =data['importe'].item()
+    
     conn = pyodbc.connect(CONNECTION_STRING)
-    try:
-        with conn.cursor() as cursor:
-            # Create a new record
-            sql = "INSERT INTO `viaje` (`aforo`, `destino`,`) VALUES ( %s,%s)"
-            cursor.execute(sql, (data, sport_id))
+    cursor = conn.cursor()
+    val=[np.int16(data['aforo']).item(),data['destino'],data['cliente_id'],data['responsable_id'],data['comercial_id'],data['pais_id'],importe,data['fecha']]
+    sql="INSERT INTO viaje (aforo, destino,cliente_id,responsable_id, comercial_id,pais_id,importe,fecha) VALUES (?,?,?,?,?,?,?,?) "
+    cursor.execute(sql,val)    
+    cursor.execute("SELECT @@IDENTITY AS ID;")
+    print('Id of inserted record is:{}'.format(cursor.fetchone()[0]))
+    
+    conn.commit()
+    
+    conn.close()  
+  
 
-            # connection is not autocommit by default. So you must commit to save
-            # your changes.
-            conn.commit()
-            row_id = cursor.lastrowid
-    except Exception as e:
-        print('INSERT TEAM')
-        print(e)
-        
+def selectViajeInsertado():
+    conn = pyodbc.connect(CONNECTION_STRING)
+    cursor = conn.cursor()
+    cursor.execute("SELECT max(id) FROM Viaje") 
+    rows = cursor.fetchone() 
+    conn.close()
+    return rows  
 
+def insertGuiaActividad(actividad_id, guia_id,fecha_actividad, viaje_id):
+    conn = pyodbc.connect(CONNECTION_STRING)
+    cursor = conn.cursor()
+    val=[actividad_id, guia_id, viaje_id,fecha_actividad]
+    sql="INSERT INTO viaje_actividad (actividad_id, guia_id, viaje_id, fecha) VALUES (?,?,?,?) "
+    cursor.execute(sql,val)    
+    conn.commit()
+    conn.close()  
 
-    finally:
-
-        return row_id
+def insertarViajeros(viaje_id, viajero_id):
+    conn = pyodbc.connect(CONNECTION_STRING)
+    cursor = conn.cursor()
+    val=[viajero_id, viaje_id]
+    sql="INSERT INTO viaje_viajero (viajero_id, viaje_id) VALUES (?,?) "
+    cursor.execute(sql,val)    
+    conn.commit()
+    conn.close()  

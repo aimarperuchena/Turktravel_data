@@ -51,12 +51,6 @@ Id Int NOT NULL IDENTITY(1,1) primary key,
 Nombre char(100),
 Precio decimal(5,2))
 
-create table actividad_guia(
-Id Int NOT NULL IDENTITY(1,1) primary key,
-Actividad_id int references actividades(id),
-Guia_id int references guia(id)
-)
-
 create table viaje(
 Id Int NOT NULL IDENTITY(1,1) primary key,
 Aforo integer,
@@ -65,7 +59,7 @@ Pais_id integer references pais(id),
 Comercial_id integer references comercial(id),
 Responsable_id integer references responsable(id),
 Cliente_id integer references cliente(id),
-Importe decimal(5,2),
+Importe float,
 Fecha date
 )
 
@@ -73,6 +67,7 @@ create table viaje_actividad(
 Id Int NOT NULL IDENTITY(1,1) primary key,
 Actividad_id int references actividades(id),
 Viaje_id int references viaje(id),
+Guia_id int references guia(id),
 Fecha date
 )
 
