@@ -4,7 +4,7 @@ from decimal import Decimal
 databaseName = 'Turktravel'
 username = 'sa'
 password = 'Laboratorio01,'
-server = 'WINDOWSSERVER1'
+server = 'SQLSERVER'
 driver= '{SQL Server}'
 CONNECTION_STRING = 'DRIVER='+driver+';SERVER='+server+';DATABASE='+databaseName+';UID='+username+';PWD='+ password
 
